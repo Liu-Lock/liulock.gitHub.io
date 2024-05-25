@@ -1,0 +1,191 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>记一次自动约羽毛球场 | Lausuman</title>
+
+<link rel="shortcut icon" href="https://lausuman.github.io/favicon.ico?v=1716628613931">
+
+<link href="https://gcore.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://lausuman.github.io/styles/main.css">
+<link rel="stylesheet" href="https://gcore.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://gcore.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://gcore.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://gcore.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://gcore.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://gcore.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+
+    <link rel="stylesheet" href="https://gcore.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+    <script src="https://gcore.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            Lausuman
+        </div>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/archives" class="menu gt-a-link">
+                            归档
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1716628613931" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    记一次自动约羽毛球场
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2024-05-21 ·
+                    </time>
+                    
+                </div>
+                <div class="post-content">
+                    <p>项目背景：每天约羽毛球好累，有时候忘了约场还没有球可以打，有没有办法用计算机自动约场呢？</p>
+<p>于是我登录预约平台发现咋验证码改了与字母验证码相比，这自动识别难度可增加太多了，既然有这个需求那只有硬着头皮上了，去Google搜索了一下看到python有个很好用的库ddddocr可以将点击验证码的文字部分与背景分割开，于是开始了漫长的开发之路</p>
+<h1 id="一-小试牛刀登录">一、小试牛刀——登录</h1>
+<p>首先摆在我面前的第一个拦路虎是预约平台的登录，这个预约平台登录验证方式是通过SSO的方式验证登录的于是我尝试去Github上找同一学校的自动化脚本<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>，该脚本的登录实现解析如下：</p>
+<ol>
+<li>首先初始化登录界面<img src="https://lausuman.github.io/post-images/1716287069688.png" alt="" loading="lazy"></li>
+<li>将用户的账号密码发送到sso平台（吐槽一下，上传用户的账号密码竟然是用明文传输😂）<img src="https://lausuman.github.io/post-images/1716287190093.png" alt="" loading="lazy"></li>
+<li>初始化用户信息，将用户姓名、部门、电话保存下来<img src="https://lausuman.github.io/post-images/1716287221564.png" alt="" loading="lazy"></li>
+<li>向<code>https://sso.scnu.edu.cn/AccountService/openapi/onekeyapp.html?app_id=61</code>这个链接发送GET请求<img src="https://lausuman.github.io/post-images/1716287249585.png" alt="" loading="lazy"></li>
+<li>将步骤4请求的返回值中的&quot;Location&quot;作为这次GET请求链接，保存这次GET请求返回值&quot;cookies&quot;中的'MoodleSession'<img src="https://lausuman.github.io/post-images/1716287274554.png" alt="" loading="lazy"></li>
+</ol>
+<p>我在该脚本基础修改了一下步骤四中的app_id值，并且将步骤五中的保存内容改为GET请求返回值&quot;cookies&quot;</p>
+<h1 id="二-深陷泥潭验证码">二、深陷泥潭——验证码</h1>
+<p>登录问题解决了，摆在面前的难关就是如何通过验证码校验了，首先先手动过验证查看网页向远程服务器发送了什么消息<img src="https://lausuman.github.io/post-images/1716308659823.png" alt="" loading="lazy">原来向远端发送了data[captchaType]、data[pointJson]、data[token]，于是我pointJson放到source里面查找，发现这个<br>
+<img src="https://lausuman.github.io/post-images/1716298598126.png" alt="" loading="lazy">感觉胜利就在眼前了哈哈，接下来我们就只用看懂这个函数究竟在干什么就行。</p>
+<p>我们先看简单的token: e.backToken老方法先在js里搜一搜有没有哪个函数生成了这个值，搜了一圈发现好像没有哪个函数生成了这个值。思路似乎在这里卡住了，但是我们想一想如果这个值不是在本地生产的那就一定是远程服务器给他的，于是我们继续回到Network里面看看<img src="https://lausuman.github.io/post-images/1716299879195.png" alt="" loading="lazy">哈哈发现个好东西token原来就是远端服务器给我们的啊，只是换了个变量名。</p>
+<p>token我们解决了，现在就是理解pointJson值是咋来的了，<img src="https://lausuman.github.io/post-images/1716342112240.png" alt="" loading="lazy"></p>
+<p>观察下<img src="https://lausuman.github.io/post-images/1716307782796.png" alt="" loading="lazy"> pointTransfrom函数接受两个参数：一个数组 t 和一个对象 e，这个函数的功能是将我们点击的坐标值等比映射到原图上。</p>
+<p>分析到这里有个问题就浮现了出来，我是人我自然知道怎么点击验证码，但是机器不知道应该点击验证码，不过上文的pointTransfrom函数隐隐透露了一点，远端确认你是否带点中验证码是通过你点击的坐标值来判断的。根据此，我们可以将点击验证码问题转换成按照远端期待的顺序传递文字的坐标，然后再进行拆解以下是拆解成的步骤</p>
+<ol>
+<li>先将验证码图片中的文字定位</li>
+<li>再将验证码图片的文字分割出来</li>
+<li>将分割出来的文字OCR识别为文本</li>
+<li>按照wordlist的文字顺序依次获得图片中文字坐标范围</li>
+<li>将依次获得的坐标范围除于2，再POST到远端</li>
+</ol>
+<p>至此我们以及完全了解本地向远端发送了什么，并且也了解了发送的数据来自于哪里以及怎么来的。接下来做的事情就很简单了，将之前分析的Js代码全部转换为Python代码</p>
+<h1 id="三-曙光初见发送预约请求">三、曙光初见——发送预约请求</h1>
+<p>通过抓包可以发现captchaVerification是t的值<img src="https://lausuman.github.io/post-images/1716345479702.png" alt="" loading="lazy"><br>
+于是我们就去source里面找t<img src="https://lausuman.github.io/post-images/1716353011017.png" alt="" loading="lazy">这又是一个三目运算符他的逻辑是如果 e.secretKey 是真值，t 将被赋予e.backToken + &quot;---&quot; + JSON.stringify(e.checkPosArr)经过函数 u 运算后返回的值；否则，它将被赋予 e.backToken + &quot;---&quot; + JSON.stringify(e.checkPosArr)，u()函数我们之前解释过是一个加密函数。那么我们只需要调用之前以及python化的代码即可。</p>
+<h1 id="四-临门一脚-提交表单">四、临门一脚--提交表单</h1>
+<p>这一步很简单抓包重放即可</p>
+<h1 id="总结">总结</h1>
+<p>本次开发耗时的步骤并不是分析加密逻辑以及重写代码，而是格式化字符，以及将数据按照格式发送到远程，我不知道大佬们会不会在这几个步骤上卡住，我想到的解决方法只有多去练习。</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>https://github.com/saiGou-14H/SCNU_LRYCourse <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://lausuman.github.io/post/shi-yong-github-codespaces-gou-jian-gui-ying-yong/" class="post-title gt-a-link">
+                    使用GitHub Codespaces构建GUI应用
+                </a>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">温故而知新</div>
+    <div class="social-container">
+        
+            
+                <a href="https://github.com/lausuman" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        
+    </div>
+    <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://lausuman.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+</div>
+</body>
+</html>

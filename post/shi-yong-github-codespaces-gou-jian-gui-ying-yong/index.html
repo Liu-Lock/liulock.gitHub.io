@@ -1,0 +1,183 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>使用GitHub Codespaces构建GUI应用 | Lausuman</title>
+
+<link rel="shortcut icon" href="https://lausuman.github.io/favicon.ico?v=1716628613931">
+
+<link href="https://gcore.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://lausuman.github.io/styles/main.css">
+<link rel="stylesheet" href="https://gcore.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://gcore.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://gcore.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://gcore.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://gcore.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://gcore.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+
+    <link rel="stylesheet" href="https://gcore.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+    <script src="https://gcore.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            Lausuman
+        </div>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/archives" class="menu gt-a-link">
+                            归档
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1716628613931" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    使用GitHub Codespaces构建GUI应用
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2024-04-21 ·
+                    </time>
+                    
+                </div>
+                <div class="post-content">
+                    <h1 id="背景知识">背景知识</h1>
+<p>Github Codespaces 可以让你在云端上开发，这样可以帮助你从安装运行环境的麻烦中解脱出来，并且可以与你的团队伙伴保持相同的开发环境进行开发。</p>
+<p>那么如果你想使用Github Codespace开发GUI应用应该怎么办呢？当你在无头环境如何运行GUI程序呢？本文就是为了解决该问题而写作的。</p>
+<h1 id="答案就是vnc">答案就是VNC！！</h1>
+<p>VNC是一个图形桌面分享系统使用RFB(Remote Frame Buffer)协议来操控远程计算机。</p>
+<h2 id="如何安装vnc">如何安装VNC？</h2>
+<p>我们可以手动安装VNC到Codespace环境也可以选择自动安装它，显然为了偷懒我们使用官方的简易安装方法来安装，我们只需要在<code>devcontainer.json</code>中添加:</p>
+<pre><code>{
+	&quot;image&quot;: &quot;mcr.microsoft.com/devcontainers/universal:2&quot;,
+	&quot;features&quot;: {
+		&quot;ghcr.io/devcontainers/features/desktop-lite:1&quot;: {
+			&quot;version&quot;: &quot;latest&quot;,
+			&quot;noVncVersion&quot;: &quot;1.2.0&quot;,
+			&quot;password&quot;: &quot;codespaces&quot;,
+			&quot;webPort&quot;: &quot;6080&quot;,
+			&quot;vncPort&quot;: &quot;5901&quot;
+		}
+	},
+	&quot;forwardPorts&quot;: [5901],
+	  &quot;portsAttributes&quot;: {
+			&quot;5901&quot;: { 
+		  &quot;label&quot;: &quot;VNC desktop&quot;
+			}
+		}
+}
+</code></pre>
+<p>如果我们没有<code>devcontainer.json</code>的话，我们可以在VS Code命令行内输入<code>&gt;Codespaces: Add Development Container Configuration Files...</code><br>
+<img src="https://lausuman.github.io/post-images/1713633657820.png" alt="" loading="lazy"><br>
+选择<code>Create New Configuration</code>然后在<code>devcontainer.json</code>中输入上面的命令</p>
+<h2 id="用vnc连接codespace">用VNC连接Codespace</h2>
+<p>这一步相当的简单只需要在VNC连接软件内输入<code>localhost:5901</code>即可连接，密码为<code>codespaces</code><br>
+<img src="https://lausuman.github.io/post-images/1713634076091.png" alt="" loading="lazy"><br>
+看到这个界面就说明成功了，你可以在VS Code里面编写GUI程序了！</p>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://lausuman.github.io/post/mo-tuo-che-tou-kui-jing-pian-tie-mo/" class="post-title gt-a-link">
+                    摩托车头盔镜片贴膜
+                </a>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">温故而知新</div>
+    <div class="social-container">
+        
+            
+                <a href="https://github.com/lausuman" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        
+    </div>
+    <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://lausuman.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+</div>
+</body>
+</html>
